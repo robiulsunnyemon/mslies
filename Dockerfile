@@ -10,12 +10,10 @@ ENV PYTHONUNBUFFERED=1 \
     POETRY_VERSION=1.8.2 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
-    POETRY_NO_INTERACTION=1 \
-    PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv"
+    POETRY_NO_INTERACTION=1
 
 # prepend poetry and venv to path
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+ENV PATH="$POETRY_HOME/bin:/app/.venv/bin:$PATH"
 
 # Build dependencies
 RUN apt-get update \
@@ -27,14 +25,17 @@ RUN apt-get update \
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # Set working directory
-WORKDIR $PYSETUP_PATH
-COPY pyproject.toml ./
+WORKDIR /app
 
-# Install dependencies
+# Copy dependency files first for caching
+COPY pyproject.toml ./
+# If poetry.lock already exists, copy it too
+COPY poetry.lock* ./
+
+# Install dependencies (runtime only)
 RUN poetry install --no-root
 
-# Project setup
-WORKDIR /app
+# Copy project files
 COPY . .
 
 # Generate Prisma Client

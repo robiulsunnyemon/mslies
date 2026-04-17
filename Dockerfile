@@ -1,5 +1,5 @@
 # Base Image
-FROM python:3.11-slim as python-base
+FROM python:3.11-slim AS python-base
 
 # ENV variables
 ENV PYTHONUNBUFFERED=1 \
@@ -30,8 +30,8 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 WORKDIR $PYSETUP_PATH
 COPY pyproject.toml ./
 
-# Install dependencies (runtime only)
-RUN poetry install --only main --no-root
+# Install dependencies
+RUN poetry install --no-root
 
 # Project setup
 WORKDIR /app

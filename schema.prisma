@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider             = "prisma-client-py"
+  recursive_type_depth = 5
+}
+
+model File {
+  id               String   @id @default(uuid())
+  filename         String
+  filepath         String
+  fileType         String   // "PDF" or "PPTX"
+  status           String   // "PENDING", "EMBEDDED", "COMPLETED", "FAILED"
+  vectorCollection String?  // Optional: To store which ChromaDB collection this file belongs to
+  mcqSets          MCQSet[]
+  createdAt        DateTime @default(now())
+}
+
+model MCQSet {
+  id          String     @id @default(uuid())
+  fileId      String     
+  file        File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  topicName   String?    // Optional: if MCQ was generated based on a specific topic
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+}
+
+model Question {
+  id            String @id @default(uuid())
+  mcqSetId      String
+  mcqSet        MCQSet @relation(fields: [mcqSetId], references: [id], onDelete: Cascade)
+  questionText  String
+  options       Json   // Array of options, e.g., ["A", "B", "C", "D"]
+  correctAnswer String // The correct option
+  explanation   String // Explanation for the answer
+}

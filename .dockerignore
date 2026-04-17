@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv
+.env
+.git
+.github
+chroma_db/
+uploads/
+Dockerfile
+.dockerignore
+.gitignore
+README.md

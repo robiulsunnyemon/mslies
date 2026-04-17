@@ -44,5 +44,5 @@ RUN poetry run prisma generate
 # Final staging
 EXPOSE 8000
 
-# Start command
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start command with database sync
+CMD ["sh", "-c", "poetry run prisma db push && poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000"]

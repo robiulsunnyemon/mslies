@@ -25,7 +25,7 @@ model OTP {
   id        String   @id @default(uuid())
   email     String
   code      String
-  type      String   // "SIGNUP", "FORGOT_PASSWORD"
+  type      String // "SIGNUP", "FORGOT_PASSWORD"
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
@@ -43,24 +43,24 @@ model File {
   id               String   @id @default(uuid())
   filename         String
   filepath         String
-  fileType         String   // "PDF" or "PPTX"
-  status           String   // "PENDING", "EMBEDDED", "COMPLETED", "FAILED"
-  vectorCollection String?  // Optional: To store which ChromaDB collection this file belongs to
-  userId           String?  // Optional for backward compatibility during migration
+  fileType         String // "PDF" or "PPTX"
+  status           String // "PENDING", "EMBEDDED", "COMPLETED", "FAILED"
+  vectorCollection String? // Optional: To store which ChromaDB collection this file belongs to
+  userId           String? // Optional for backward compatibility during migration
   user             User?    @relation(fields: [userId], references: [id])
   mcqSets          MCQSet[]
   createdAt        DateTime @default(now())
 }
 
 model MCQSet {
-  id          String     @id @default(uuid())
-  fileId      String     
-  file        File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  userId      String?    // Optional for backward compatibility
-  user        User?      @relation(fields: [userId], references: [id])
-  topicName   String?    // Optional: if MCQ was generated based on a specific topic
-  questions   Question[]
-  createdAt   DateTime   @default(now())
+  id        String     @id @default(uuid())
+  fileId    String
+  file      File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  userId    String? // Optional for backward compatibility
+  user      User?      @relation(fields: [userId], references: [id])
+  topicName String? // Optional: if MCQ was generated based on a specific topic
+  questions Question[]
+  createdAt DateTime   @default(now())
 }
 
 model Question {
@@ -68,7 +68,7 @@ model Question {
   mcqSetId      String
   mcqSet        MCQSet @relation(fields: [mcqSetId], references: [id], onDelete: Cascade)
   questionText  String
-  options       Json   // Array of options, e.g., ["A", "B", "C", "D"]
+  options       Json // Array of options, e.g., ["A", "B", "C", "D"]
   correctAnswer String // The correct option
   explanation   String // Explanation for the answer
 }

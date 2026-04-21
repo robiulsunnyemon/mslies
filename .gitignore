@@ -26,7 +26,6 @@ wheels/
 poetry.lock
 
 # Environment
-.env
 .venv/
 env/
 venv/
@@ -38,3 +37,5 @@ uploads/
 
 # Prisma
 schema.prisma.backup
+config.bat
+node_modules

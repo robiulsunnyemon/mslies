@@ -57,13 +57,13 @@ class FileResponse(BaseModel):
     fileType: str
     status: str
     createdAt: datetime
-    mcqSets: List[MCQSetSchema] = []
+    mcqSets: Optional[List[MCQSetSchema]] = []
 
     class Config:
         from_attributes = True
 
 class UserMeResponse(UserResponse):
-    files: List[FileResponse] = []
+    files: Optional[List[FileResponse]] = []
 
 class GenerateRequest(BaseModel):
     topic: Optional[str] = None

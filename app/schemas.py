@@ -9,6 +9,10 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
+class Login(BaseModel):
+    email:EmailStr
+    password:str
+
 class UserResponse(UserBase):
     id: str
     isVerified: bool
@@ -64,6 +68,9 @@ class FileResponse(BaseModel):
 
 class UserMeResponse(UserResponse):
     files: Optional[List[FileResponse]] = []
+
+class UpdateProfileRequest(BaseModel):
+    fullname: str
 
 class GenerateRequest(BaseModel):
     topic: Optional[str] = None

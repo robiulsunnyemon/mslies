@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from app.database import db
 from app.schemas import (
     UserCreate, UserResponse, UserMeResponse, Token, OtpVerifyRequest, 
-    ForgotPasswordRequest, ResetPasswordRequest
+    ForgotPasswordRequest, ResetPasswordRequest, UpdateProfileRequest,Login
 )
 from app.services.auth_service import (
     hash_password, verify_password, create_access_token, 
@@ -113,7 +113,7 @@ async def verify_otp(request: OtpVerifyRequest):
     }
 
 @router.post("/login")
-async def login(user_data: UserCreate): # Reuse UserCreate for convenience or create LoginRequest
+async def login(user_data: Login): # Reuse UserCreate for convenience or create LoginRequest
     user = await db.user.find_unique(where={"email": user_data.email})
     if not user or not verify_password(user_data.password, user.passwordHash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
@@ -226,3 +226,11 @@ async def refresh(refresh_token: str):
         
     access_token = create_access_token(data={"sub": token_record.user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.put("/update-profile", response_model=UserResponse)
+async def update_profile(request: UpdateProfileRequest, current_user: UserResponse = Depends(get_current_user)):
+    user = await db.user.update(
+        where={"id": current_user.id},
+        data={"fullname": request.fullname}
+    )
+    return user
